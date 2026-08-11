@@ -194,6 +194,9 @@ h2 + .lead{margin-top:16px}
 .field label{position:absolute;left:15px;top:14px;color:var(--muted-2);pointer-events:none;transition:.15s}
 .field input:focus+label,.field input:not(:placeholder-shown)+label,
 .field textarea:focus+label,.field textarea:not(:placeholder-shown)+label{top:6px;font-size:.68rem;color:var(--gold-2);font-weight:700;letter-spacing:.04em}
+/* капча: вопрос — обычной подписью над полем (не плавающий label) */
+.field--captcha label.captcha-q{position:static;display:block;pointer-events:auto;margin:0 0 8px;font-size:.82rem;font-weight:600;letter-spacing:normal;color:var(--muted)}
+.field--captcha input{padding:13px 14px}
 .form__note{margin:0;text-align:center;font-weight:600;color:var(--gold-2)}
 .form__note--error{color:#e57373}
 .field .err{display:none;color:#e57373;font-size:.78rem;margin-top:6px}
