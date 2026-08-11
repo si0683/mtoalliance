@@ -287,12 +287,37 @@
         <div class="cinfo"><span class="cinfo__label">Компания</span><p>MTO ALLIANCE · «МТО-Альянс», г. Самара</p></div>
       </div>
       <form class="contacts__form reveal" id="form" method="POST" novalidate>
-        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-        <div class="field"><input type="text" id="f-name" required placeholder=" "><label for="f-name">Ваше имя</label></div>
-        <div class="field"><input type="text" id="f-company" placeholder=" "><label for="f-company">Компания</label></div>
-        <div class="field"><input type="tel" id="f-phone" required placeholder=" "><label for="f-phone">Телефон</label></div>
-        <div class="field"><input type="email" id="f-email" placeholder=" "><label for="f-email">E-mail</label></div>
-        <div class="field"><textarea id="f-msg" rows="3" placeholder=" "></textarea><label for="f-msg">Какое оборудование интересует?</label></div>
+        <!-- honeypot: скрытое поле-ловушка для ботов -->
+        <input type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <div class="field">
+          <input type="text" id="f-name" required placeholder=" " autocomplete="name">
+          <label for="f-name">Ваше имя</label>
+          <span class="err" id="err-name"></span>
+        </div>
+        <div class="field">
+          <input type="text" id="f-inn" inputmode="numeric" maxlength="12" required placeholder=" ">
+          <label for="f-inn">ИНН компании</label>
+          <span class="err" id="err-inn"></span>
+        </div>
+        <div class="field">
+          <input type="tel" id="f-phone" inputmode="tel" required placeholder=" " autocomplete="tel">
+          <label for="f-phone">Телефон</label>
+          <span class="err" id="err-phone"></span>
+        </div>
+        <div class="field">
+          <input type="email" id="f-email" required placeholder=" " autocomplete="email">
+          <label for="f-email">E-mail</label>
+          <span class="err" id="err-email"></span>
+        </div>
+        <div class="field">
+          <textarea id="f-msg" rows="3" placeholder=" "></textarea>
+          <label for="f-msg">Какое оборудование интересует?</label>
+        </div>
+        <div class="field">
+          <input type="text" id="f-captcha" inputmode="numeric" maxlength="3" required placeholder=" " autocomplete="off">
+          <label for="f-captcha" id="captcha-label">Защита от ботов</label>
+          <span class="err" id="err-captcha"></span>
+        </div>
         <button type="submit" class="btn btn--block">Отправить заявку</button>
         <p class="form__note" id="form-note" hidden></p>
       </form>

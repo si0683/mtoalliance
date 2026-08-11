@@ -194,6 +194,10 @@ h2 + .lead{margin-top:16px}
 .field textarea:focus+label,.field textarea:not(:placeholder-shown)+label{top:6px;font-size:.68rem;color:var(--gold-2);font-weight:700;letter-spacing:.04em}
 .form__note{margin:0;text-align:center;font-weight:600;color:var(--gold-2)}
 .form__note--error{color:#e57373}
+.field .err{display:none;color:#e57373;font-size:.78rem;margin-top:6px}
+.field.invalid .err{display:block}
+.field.invalid input,.field.invalid textarea{border-color:#e57373}
+.field.invalid label{color:#e57373}
 
 /* ===== Footer ===== */
 .footer{background:#07090c;border-top:1px solid var(--line);padding:56px 0 30px}
