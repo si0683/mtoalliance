@@ -11,9 +11,22 @@
  * -------------------------------------------------------------------
  */
 
-$TO      = 'vasiliysidorenko63@yandex.ru';          // TODO: заменить на info@mto-smr.ru
+$TO      = 'vasiliysidorenko63@yandex.ru';          // куда приходят заявки. TODO: заменить на info@mto-smr.ru
 $SUBJECT = 'Заявка с сайта МТО-Альянс';
-$FROM    = 'noreply@mto-smr.ru';                     // лучше — реальный ящик вашего домена
+
+// ── Настройки SMTP-отправки ───────────────────────────────────────
+//  Пример ниже — для Яндекс.Почты. Для другого провайдера поменяйте host/port.
+//  ВАЖНО: $SMTP_USER должен совпадать с $FROM (провайдер не даёт слать
+//  «от чужого имени»). Пароль — это «пароль приложения», а НЕ пароль от
+//  почты (создаётся в настройках безопасности ящика).
+$SMTP_HOST   = 'smtp.yandex.ru';
+$SMTP_PORT   = 465;                                  // 465 = SSL, 587 = TLS
+$SMTP_SECURE = 'ssl';                                // 'ssl' для 465, 'tls' для 587
+$SMTP_USER   = 'vasiliysidorenko63@yandex.ru';       // логин ящика-отправителя
+$SMTP_PASS   = 'ВСТАВЬТЕ_ПАРОЛЬ_ПРИЛОЖЕНИЯ';         // TODO: пароль приложения
+$FROM        = $SMTP_USER;                           // адрес отправителя (= логину SMTP)
+$FROM_NAME   = 'Сайт МТО-Альянс';
+// ──────────────────────────────────────────────────────────────────
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -117,41 +130,37 @@ $body .= "E-mail:   $email\n";
 $body .= "Вложение: " . ($attachName !== '' ? $attachName : 'нет') . "\n";
 $body .= "\n-- \nОтправлено с сайта, " . date('d.m.Y H:i');
 
-$subject_enc = '=?UTF-8?B?' . base64_encode($SUBJECT) . '?=';
-$fromHdr = 'From: =?UTF-8?B?' . base64_encode('МТО-Альянс') . "?= <$FROM>";
+// ── Отправка через SMTP (PHPMailer) ──
+require __DIR__ . '/libs/PHPMailer/Exception.php';
+require __DIR__ . '/libs/PHPMailer/PHPMailer.php';
+require __DIR__ . '/libs/PHPMailer/SMTP.php';
 
-if ($attachData !== null) {
-    // Письмо с вложением (multipart/mixed)
-    $boundary = 'b_' . md5(uniqid('', true));
-    $headers  = $fromHdr . "\r\n";
-    $headers .= 'Reply-To: ' . $email . "\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"';
+$mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+try {
+    $mail->isSMTP();
+    $mail->Host       = $SMTP_HOST;
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $SMTP_USER;
+    $mail->Password   = $SMTP_PASS;
+    $mail->SMTPSecure = $SMTP_SECURE;   // 'ssl' | 'tls'
+    $mail->Port       = $SMTP_PORT;
+    $mail->CharSet    = 'UTF-8';
 
-    $msg  = '--' . $boundary . "\r\n";
-    $msg .= "Content-Type: text/plain; charset=utf-8\r\n";
-    $msg .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-    $msg .= $body . "\r\n\r\n";
-    $msg .= '--' . $boundary . "\r\n";
-    $msg .= 'Content-Type: application/octet-stream; name="' . $attachName . '"' . "\r\n";
-    $msg .= "Content-Transfer-Encoding: base64\r\n";
-    $msg .= 'Content-Disposition: attachment; filename="' . $attachName . '"' . "\r\n\r\n";
-    $msg .= chunk_split(base64_encode($attachData)) . "\r\n";
-    $msg .= '--' . $boundary . '--';
+    $mail->setFrom($FROM, $FROM_NAME);
+    $mail->addAddress($TO);
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $mail->addReplyTo($email); // ответить сразу клиенту
+    }
+    $mail->Subject = $SUBJECT;
+    $mail->Body    = $body;
 
-    $ok = @mail($TO, $subject_enc, $msg, $headers);
-} else {
-    // Обычное текстовое письмо
-    $headers  = $fromHdr . "\r\n";
-    $headers .= 'Reply-To: ' . $email . "\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/plain; charset=utf-8";
-    $ok = @mail($TO, $subject_enc, $body, $headers);
-}
+    if ($attachData !== null) {
+        $mail->addStringAttachment($attachData, $attachName);
+    }
 
-if ($ok) {
+    $mail->send();
     echo json_encode(['success' => true]);
-} else {
+} catch (\PHPMailer\PHPMailer\Exception $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Не удалось отправить письмо на сервере']);
+    echo json_encode(['success' => false, 'message' => 'Не удалось отправить письмо (SMTP). ' . $mail->ErrorInfo], JSON_UNESCAPED_UNICODE);
 }
