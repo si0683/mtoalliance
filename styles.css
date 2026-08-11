@@ -214,6 +214,9 @@ h2 + .lead{margin-top:16px}
 .file-list li::before{content:"📄";font-size:.95rem}
 .file-list .fl-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
 .file-list .fl-size{color:var(--muted-2);white-space:nowrap;font-size:.8rem}
+.fl-remove{flex:none;width:24px;height:24px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted-2);font-size:1.25rem;line-height:1;cursor:pointer;transition:color .15s,background .15s}
+.fl-remove:hover{color:#e57373;background:rgba(229,115,115,.14)}
+.form__formats{margin:0;font-size:.76rem;line-height:1.55;color:var(--muted-2);text-align:center}
 
 /* ===== Footer ===== */
 .footer{background:#07090c;border-top:1px solid var(--line);padding:56px 0 30px}

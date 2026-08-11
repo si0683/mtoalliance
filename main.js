@@ -137,32 +137,45 @@
     var fileNameEl = document.getElementById('file-name');
     var fileListEl = document.getElementById('file-list');
     var fileDefault = fileNameEl.textContent;
+    var selectedFiles = []; // собственный список — чтобы можно было удалять отдельные файлы
     function fmtSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' МБ' : Math.max(1, Math.round(b / 1024)) + ' КБ'; }
-    function resetFileUI() { fileNameEl.textContent = fileDefault; fileDrop.classList.remove('has-file'); fileListEl.innerHTML = ''; }
+    function resetFileUI() { selectedFiles = []; renderFiles(); }
     function renderFiles() {
-      var files = fileEl.files, total = 0;
       fileListEl.innerHTML = '';
-      if (!files.length) { resetFileUI(); return; }
-      for (var i = 0; i < files.length; i++) {
-        total += files[i].size;
+      if (!selectedFiles.length) { fileNameEl.textContent = fileDefault; fileDrop.classList.remove('has-file'); return; }
+      var total = 0;
+      selectedFiles.forEach(function (f, idx) {
+        total += f.size;
         var li = document.createElement('li');
-        var n = document.createElement('span'); n.className = 'fl-name'; n.textContent = files[i].name;
-        var s = document.createElement('span'); s.className = 'fl-size'; s.textContent = fmtSize(files[i].size);
-        li.appendChild(n); li.appendChild(s); fileListEl.appendChild(li);
-      }
-      fileNameEl.textContent = 'Выбрано файлов: ' + files.length + ' · ' + fmtSize(total);
+        var n = document.createElement('span'); n.className = 'fl-name'; n.textContent = f.name;
+        var s = document.createElement('span'); s.className = 'fl-size'; s.textContent = fmtSize(f.size);
+        var rm = document.createElement('button');
+        rm.type = 'button'; rm.className = 'fl-remove'; rm.setAttribute('aria-label', 'Удалить файл'); rm.textContent = '×';
+        rm.addEventListener('click', function () { selectedFiles.splice(idx, 1); clearErr('f-file'); renderFiles(); });
+        li.appendChild(n); li.appendChild(s); li.appendChild(rm);
+        fileListEl.appendChild(li);
+      });
+      fileNameEl.textContent = 'Выбрано файлов: ' + selectedFiles.length + ' · ' + fmtSize(total);
       fileDrop.classList.add('has-file');
     }
-    fileEl.addEventListener('change', function () { clearErr('f-file'); renderFiles(); });
+    fileEl.addEventListener('change', function () {
+      clearErr('f-file');
+      for (var i = 0; i < fileEl.files.length; i++) {
+        var f = fileEl.files[i];
+        var dup = selectedFiles.some(function (x) { return x.name === f.name && x.size === f.size; });
+        if (!dup) selectedFiles.push(f);
+      }
+      fileEl.value = ''; // сброс, чтобы можно было выбрать те же файлы повторно
+      renderFiles();
+    });
     function fileError() {
-      var files = fileEl.files;
-      if (!files.length) return null; // файлы необязательны
-      if (files.length > MAX_FILES) return 'Не более ' + MAX_FILES + ' файлов';
+      if (!selectedFiles.length) return null; // файлы необязательны
+      if (selectedFiles.length > MAX_FILES) return 'Не более ' + MAX_FILES + ' файлов';
       var total = 0;
-      for (var i = 0; i < files.length; i++) {
-        var ext = (files[i].name.split('.').pop() || '').toLowerCase();
-        if (ALLOWED_EXT.indexOf(ext) === -1) return 'Недопустимый тип файла: ' + files[i].name;
-        total += files[i].size;
+      for (var i = 0; i < selectedFiles.length; i++) {
+        var ext = (selectedFiles[i].name.split('.').pop() || '').toLowerCase();
+        if (ALLOWED_EXT.indexOf(ext) === -1) return 'Недопустимый тип файла: ' + selectedFiles[i].name;
+        total += selectedFiles[i].size;
       }
       if (total > MAX_TOTAL) return 'Суммарный размер файлов больше 100 МБ';
       return null;
@@ -200,7 +213,7 @@
 
       if (firstBad) { document.getElementById(firstBad).focus(); return; }
 
-      var files = fileEl.files;
+      var files = selectedFiles;
       var reqOpts;
       if (files.length) {
         // с файлами — только multipart/form-data (браузер сам проставит Content-Type)
