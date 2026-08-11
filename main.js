@@ -128,6 +128,28 @@
       document.getElementById(id).addEventListener('input', function () { clearErr(id); });
     });
 
+    // Файл-вложение: показать имя + валидация (тип/размер)
+    var ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
+    var MAX_FILE = 10 * 1024 * 1024; // 10 МБ
+    var fileEl = document.getElementById('f-file');
+    var fileDrop = document.getElementById('file-drop');
+    var fileNameEl = document.getElementById('file-name');
+    var fileDefault = fileNameEl.textContent;
+    function resetFileUI() { fileNameEl.textContent = fileDefault; fileDrop.classList.remove('has-file'); }
+    fileEl.addEventListener('change', function () {
+      clearErr('f-file');
+      var f = fileEl.files[0];
+      if (f) { fileNameEl.textContent = f.name; fileDrop.classList.add('has-file'); } else { resetFileUI(); }
+    });
+    function fileError() {
+      var f = fileEl.files[0];
+      if (!f) return null; // файл необязателен
+      var ext = (f.name.split('.').pop() || '').toLowerCase();
+      if (ALLOWED_EXT.indexOf(ext) === -1) return 'Разрешены только PDF, Word и Excel';
+      if (f.size > MAX_FILE) return 'Файл больше 10 МБ';
+      return null;
+    }
+
     function showNote(msg, err) {
       note.textContent = msg; note.hidden = false;
       note.classList.toggle('form__note--error', !!err);
@@ -146,8 +168,8 @@
       var inn = document.getElementById('f-inn').value.trim();
       var phone = document.getElementById('f-phone').value.trim();
       var email = document.getElementById('f-email').value.trim();
-      var msg = document.getElementById('f-msg').value.trim();
       var cap = document.getElementById('f-captcha').value.trim();
+      var honey = document.getElementById('f-honey').value;
 
       var firstBad = null;
       function check(ok, id, m) { if (!ok) { setErr(id, m); if (!firstBad) firstBad = id; } }
@@ -155,25 +177,35 @@
       check(validINN(inn), 'f-inn', 'Некорректный ИНН (10 или 12 цифр)');
       check(validPhone(phone), 'f-phone', 'Российский номер: 11 цифр, например +7 (846) 979-99-99');
       check(validEmail(email), 'f-email', 'Введите корректный e-mail, например name@company.ru');
+      var fErr = fileError(); if (fErr) { setErr('f-file', fErr); if (!firstBad) firstBad = 'f-file'; }
       check(parseInt(cap, 10) === ca + cb, 'f-captcha', 'Неверный ответ на пример');
 
       if (firstBad) { document.getElementById(firstBad).focus(); return; }
 
-      var payload = {
-        name: name, inn: inn, phone: normPhone(phone), email: email, message: msg,
-        _honey: document.getElementById('f-honey').value,
-        _subject: 'Заявка с сайта МТО-Альянс', _template: 'table'
-      };
+      var file = fileEl.files[0];
+      var reqOpts;
+      if (file) {
+        // с файлом — только multipart/form-data (браузер сам проставит Content-Type)
+        var fd = new FormData();
+        fd.append('name', name); fd.append('inn', inn); fd.append('phone', normPhone(phone));
+        fd.append('email', email); fd.append('_honey', honey);
+        fd.append('_subject', 'Заявка с сайта МТО-Альянс'); fd.append('_template', 'table');
+        fd.append('attachment', file, file.name);
+        reqOpts = { method: 'POST', headers: { 'Accept': 'application/json' }, body: fd };
+      } else {
+        var payload = {
+          name: name, inn: inn, phone: normPhone(phone), email: email,
+          _honey: honey, _subject: 'Заявка с сайта МТО-Альянс', _template: 'table'
+        };
+        reqOpts = { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(payload) };
+      }
+
       btn.disabled = true; btn.textContent = 'Отправляем…'; note.hidden = true;
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      })
+      fetch(endpoint, reqOpts)
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (res) {
           if (!res.ok) throw new Error();
-          form.reset(); showNote('Спасибо! Заявка отправлена — мы свяжемся с вами.', false);
+          form.reset(); resetFileUI(); showNote('Спасибо! Заявка отправлена — мы свяжемся с вами.', false);
           btn.textContent = 'Отправлено';
         })
         .catch(function () {

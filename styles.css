@@ -198,6 +198,17 @@ h2 + .lead{margin-top:16px}
 .field.invalid .err{display:block}
 .field.invalid input,.field.invalid textarea{border-color:#e57373}
 .field.invalid label{color:#e57373}
+/* file upload */
+.field--file input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;padding:0;margin:0}
+.field--file label.file-drop{position:static;left:auto;top:auto;pointer-events:auto;display:flex;align-items:center;gap:12px;width:100%;padding:15px 16px;border:1.5px dashed var(--line-2);border-radius:11px;background:var(--bg-2);color:var(--muted);cursor:pointer;transition:border-color .15s,color .15s,background .15s;font-size:1rem;font-weight:400;letter-spacing:normal}
+.file-drop:hover{border-color:var(--gold-deep);color:var(--ink)}
+.field--file input[type=file]:focus-visible + .file-drop{border-color:var(--gold-deep);color:var(--ink)}
+.file-drop.has-file{border-style:solid;border-color:var(--gold-deep);color:var(--ink);background:rgba(216,178,94,.06)}
+.file-drop__ic{font-size:1.15rem;line-height:1}
+.file-drop__txt{flex:1;min-width:0;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-drop__hint{font-size:.76rem;color:var(--muted-2);white-space:nowrap}
+.field--file.invalid .file-drop{border-color:#e57373;color:#e57373}
+.field--file.invalid label{color:inherit}
 
 /* ===== Footer ===== */
 .footer{background:#07090c;border-top:1px solid var(--line);padding:56px 0 30px}

@@ -309,9 +309,14 @@
           <label for="f-email">E-mail</label>
           <span class="err" id="err-email"></span>
         </div>
-        <div class="field">
-          <textarea id="f-msg" rows="3" placeholder=" "></textarea>
-          <label for="f-msg">Какое оборудование интересует?</label>
+        <div class="field field--file">
+          <input type="file" id="f-file" accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+          <label for="f-file" class="file-drop" id="file-drop">
+            <span class="file-drop__ic" aria-hidden="true">📎</span>
+            <span class="file-drop__txt" id="file-name">Прикрепите спецификацию — PDF, Word или Excel</span>
+            <span class="file-drop__hint">до 10&nbsp;МБ</span>
+          </label>
+          <span class="err" id="err-file"></span>
         </div>
         <div class="field">
           <input type="text" id="f-captcha" inputmode="numeric" maxlength="3" required placeholder=" " autocomplete="off">
