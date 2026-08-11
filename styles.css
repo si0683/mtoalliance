@@ -231,8 +231,8 @@ h2 + .lead{margin-top:16px}
 @media (max-width:560px){
   .cats,.adv,.team,.reefer__features,.footer__inner{grid-template-columns:1fr}
   .stats__grid{grid-template-columns:1fr 1fr}
-  .hero{min-height:100vh;min-height:100dvh;align-items:flex-start;padding:0}
-  .hero__content{padding-top:104px;padding-bottom:36px}
+  .hero{min-height:100vh;min-height:100dvh;align-items:center;padding:76px 0 24px}
+  .hero__content{padding-top:8px;padding-bottom:8px}
   .eyebrow{margin-bottom:14px;font-size:.72rem}
   .hero h1{font-size:clamp(1.9rem,7.6vw,2.35rem);max-width:none}
   .hero__lead{font-size:1rem;margin:16px 0 24px}
