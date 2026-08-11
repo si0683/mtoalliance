@@ -62,11 +62,19 @@
     var btn = form.querySelector('button[type="submit"]');
     var btnText = btn.textContent;
 
-    // ── Адрес получателя заявок. После активации на formsubmit.co
-    //    можно заменить почту на зашифрованный alias. ──
-    var FORM_TARGET = 'info@mto-smr.ru';
-    var endpoint = 'https://formsubmit.co/ajax/' + FORM_TARGET;
-    form.setAttribute('action', 'https://formsubmit.co/' + FORM_TARGET);
+    // ── Куда и как отправлять заявки ──────────────────────────────
+    //  FORM_MODE:
+    //   'formsubmit' — работает на статике / GitHub Pages (сервис FormSubmit)
+    //   'php'        — свой серверный обработчик send.php (нужен PHP-хостинг)
+    var FORM_MODE = 'formsubmit';
+    var PHP_ENDPOINT = 'send.php';
+    //  Адрес получателя (для режима formsubmit). ВРЕМЕННЫЙ — для проверки.
+    //  После теста заменить на 'info@mto-smr.ru' (и переменную $TO в send.php).
+    var FORM_TARGET = 'vasiliysidorenko63@yandex.ru';
+    var endpoint = FORM_MODE === 'php'
+      ? PHP_ENDPOINT
+      : 'https://formsubmit.co/ajax/' + FORM_TARGET;
+    if (FORM_MODE !== 'php') form.setAttribute('action', 'https://formsubmit.co/' + FORM_TARGET);
 
     // ── Антиспам: временная ловушка + математический вопрос ──
     var loadedAt = Date.now();
@@ -153,6 +161,7 @@
 
       var payload = {
         name: name, inn: inn, phone: normPhone(phone), email: email, message: msg,
+        _honey: document.getElementById('f-honey').value,
         _subject: 'Заявка с сайта МТО-Альянс', _template: 'table'
       };
       btn.disabled = true; btn.textContent = 'Отправляем…'; note.hidden = true;
