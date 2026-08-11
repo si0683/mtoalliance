@@ -204,6 +204,7 @@ h2 + .lead{margin-top:16px}
 .file-drop:hover{border-color:var(--gold-deep);color:var(--ink)}
 .field--file input[type=file]:focus-visible + .file-drop{border-color:var(--gold-deep);color:var(--ink)}
 .file-drop.has-file{border-style:solid;border-color:var(--gold-deep);color:var(--ink);background:rgba(216,178,94,.06)}
+.field--file label.file-drop.dragover{border-style:dashed;border-color:var(--gold);color:var(--ink);background:rgba(216,178,94,.14)}
 .file-drop__ic{font-size:1.15rem;line-height:1}
 .file-drop__txt{flex:1;min-width:0;font-size:.94rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-drop__hint{font-size:.76rem;color:var(--muted-2);white-space:nowrap}

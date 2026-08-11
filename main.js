@@ -158,16 +158,31 @@
       fileNameEl.textContent = 'Выбрано файлов: ' + selectedFiles.length + ' · ' + fmtSize(total);
       fileDrop.classList.add('has-file');
     }
-    fileEl.addEventListener('change', function () {
+    function addFiles(list) {
       clearErr('f-file');
-      for (var i = 0; i < fileEl.files.length; i++) {
-        var f = fileEl.files[i];
+      for (var i = 0; i < list.length; i++) {
+        var f = list[i];
         var dup = selectedFiles.some(function (x) { return x.name === f.name && x.size === f.size; });
         if (!dup) selectedFiles.push(f);
       }
-      fileEl.value = ''; // сброс, чтобы можно было выбрать те же файлы повторно
       renderFiles();
+    }
+    fileEl.addEventListener('change', function () { addFiles(fileEl.files); fileEl.value = ''; });
+
+    // Drag & drop
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      fileDrop.addEventListener(ev, function (e) { e.preventDefault(); fileDrop.classList.add('dragover'); });
     });
+    ['dragleave', 'dragend'].forEach(function (ev) {
+      fileDrop.addEventListener(ev, function (e) { e.preventDefault(); fileDrop.classList.remove('dragover'); });
+    });
+    fileDrop.addEventListener('drop', function (e) {
+      e.preventDefault(); fileDrop.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+    });
+    // чтобы случайный промах не открыл файл в браузере
+    window.addEventListener('dragover', function (e) { e.preventDefault(); });
+    window.addEventListener('drop', function (e) { e.preventDefault(); });
     function fileError() {
       if (!selectedFiles.length) return null; // файлы необязательны
       if (selectedFiles.length > MAX_FILES) return 'Не более ' + MAX_FILES + ' файлов';
