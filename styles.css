@@ -209,6 +209,11 @@ h2 + .lead{margin-top:16px}
 .file-drop__hint{font-size:.76rem;color:var(--muted-2);white-space:nowrap}
 .field--file.invalid .file-drop{border-color:#e57373;color:#e57373}
 .field--file.invalid label{color:inherit}
+.file-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.file-list li{display:flex;align-items:center;gap:10px;font-size:.86rem;background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+.file-list li::before{content:"📄";font-size:.95rem}
+.file-list .fl-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.file-list .fl-size{color:var(--muted-2);white-space:nowrap;font-size:.8rem}
 
 /* ===== Footer ===== */
 .footer{background:#07090c;border-top:1px solid var(--line);padding:56px 0 30px}

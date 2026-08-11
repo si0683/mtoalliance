@@ -85,49 +85,72 @@ if ($errors) {
     exit;
 }
 
-// ── Вложение (необязательно): проверка типа/размера + защита ──
-$attachData = null; $attachName = '';
-if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-    $f = $_FILES['attachment'];
-    $maxSize = 10 * 1024 * 1024; // 10 МБ
+// ── Вложения (до 10 файлов, суммарно до 100 МБ): проверка типа/размера + защита ──
+$MAX_FILES = 10;
+$MAX_TOTAL = 100 * 1024 * 1024; // 100 МБ
 
-    // Белый список: расширение => допустимые реальные MIME-типы
-    $allowed = [
-        'pdf'  => ['application/pdf'],
-        'doc'  => ['application/msword', 'application/octet-stream'],
-        'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
-        'xls'  => ['application/vnd.ms-excel', 'application/octet-stream'],
-        'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
-    ];
+// Белый список расширений
+$allowedExt = ['pdf','doc','docx','xls','xlsx','ppt','pptx','odp','odt','ods','rtf','txt','csv','jpg','jpeg','png','tif','tiff','bmp','zip','rar','7z'];
+// Допустимые реальные MIME-типы (по содержимому). Блокирует переименованные exe/скрипты.
+$safeMime = [
+    'application/pdf',
+    'application/msword','application/vnd.ms-excel','application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.oasis.opendocument.text','application/vnd.oasis.opendocument.spreadsheet','application/vnd.oasis.opendocument.presentation',
+    'application/rtf','text/rtf','text/plain','text/csv','application/csv',
+    'image/jpeg','image/png','image/tiff','image/bmp','image/x-ms-bmp',
+    'application/zip','application/x-rar','application/vnd.rar','application/x-rar-compressed','application/x-7z-compressed',
+    'application/octet-stream',
+];
 
-    $ext = strtolower(pathinfo($f['name'], PATHINFO_EXTENSION));
-    if (!isset($allowed[$ext]))       fail('Недопустимый тип файла. Разрешены PDF, Word, Excel');
-    if ($f['size'] > $maxSize)        fail('Файл больше 10 МБ');
-    if (!is_uploaded_file($f['tmp_name'])) fail('Ошибка загрузки файла');
+$attachments = []; // ['data' => ..., 'name' => ...]
+if (isset($_FILES['attachment'])) {
+    $F     = $_FILES['attachment'];
+    $names = (array)$F['name'];
+    $tmps  = (array)$F['tmp_name'];
+    $sizes = (array)$F['size'];
+    $errs  = (array)$F['error'];
 
-    // Реальный MIME по содержимому (а не по расширению)
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mime  = finfo_file($finfo, $f['tmp_name']);
+    $total = 0;
+    // $clam = '/usr/bin/clamscan'; // антивирус (опционально)
+
+    foreach ($names as $i => $origName) {
+        $err = isset($errs[$i]) ? $errs[$i] : UPLOAD_ERR_NO_FILE;
+        if ($err === UPLOAD_ERR_NO_FILE) continue;
+        if ($err !== UPLOAD_ERR_OK)             fail('Ошибка загрузки файла: ' . $origName);
+        if (count($attachments) >= $MAX_FILES)  fail('Можно прикрепить не более ' . $MAX_FILES . ' файлов');
+        if (!is_uploaded_file($tmps[$i]))       fail('Ошибка загрузки файла');
+
+        $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowedExt, true)) fail('Недопустимый тип файла: ' . $origName);
+
+        $mime = finfo_file($finfo, $tmps[$i]);
+        if (!in_array($mime, $safeMime, true))  fail('Содержимое файла не разрешено: ' . $origName);
+
+        $total += $sizes[$i];
+        if ($total > $MAX_TOTAL)                fail('Суммарный размер файлов больше 100 МБ');
+
+        // if (isset($clam) && is_executable($clam)) {
+        //     exec(escapeshellarg($clam) . ' --no-summary ' . escapeshellarg($tmps[$i]), $o, $rc);
+        //     if ($rc !== 0) fail('Файл не прошёл антивирусную проверку: ' . $origName);
+        // }
+
+        $safeName = preg_replace('/[^\w.\- ]+/u', '_', $origName);
+        $attachments[] = ['data' => file_get_contents($tmps[$i]), 'name' => $safeName];
+    }
     finfo_close($finfo);
-    if (!in_array($mime, $allowed[$ext], true)) fail('Содержимое файла не соответствует расширению');
-
-    // ── Антивирус ClamAV (опционально). Раскомментируйте, если на хостинге есть clamscan ──
-    // $clam = '/usr/bin/clamscan';
-    // if (is_executable($clam)) {
-    //     exec(escapeshellarg($clam) . ' --no-summary ' . escapeshellarg($f['tmp_name']), $o, $rc);
-    //     if ($rc !== 0) fail('Файл не прошёл антивирусную проверку');
-    // }
-
-    $attachData = file_get_contents($f['tmp_name']);
-    $attachName = preg_replace('/[^\w.\- ]+/u', '_', $f['name']); // безопасное имя
 }
+$attachNames = array_map(function ($a) { return $a['name']; }, $attachments);
 
 $body  = "Новая заявка с сайта МТО-Альянс\n\n";
 $body .= "Имя:      $name\n";
 $body .= "ИНН:      $inn\n";
 $body .= "Телефон:  +$phone\n";
 $body .= "E-mail:   $email\n";
-$body .= "Вложение: " . ($attachName !== '' ? $attachName : 'нет') . "\n";
+$body .= "Вложения: " . (count($attachNames) ? count($attachNames) . ' — ' . implode(', ', $attachNames) : 'нет') . "\n";
 $body .= "\n-- \nОтправлено с сайта, " . date('d.m.Y H:i');
 
 // ── Отправка через SMTP (PHPMailer) ──
@@ -154,8 +177,8 @@ try {
     $mail->Subject = $SUBJECT;
     $mail->Body    = $body;
 
-    if ($attachData !== null) {
-        $mail->addStringAttachment($attachData, $attachName);
+    foreach ($attachments as $a) {
+        $mail->addStringAttachment($a['data'], $a['name']);
     }
 
     $mail->send();

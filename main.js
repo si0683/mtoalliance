@@ -128,25 +128,43 @@
       document.getElementById(id).addEventListener('input', function () { clearErr(id); });
     });
 
-    // Файл-вложение: показать имя + валидация (тип/размер)
-    var ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
-    var MAX_FILE = 10 * 1024 * 1024; // 10 МБ
+    // Файлы-вложения: до 10 шт., суммарно до 100 МБ
+    var ALLOWED_EXT = ['pdf','doc','docx','xls','xlsx','ppt','pptx','odp','odt','ods','rtf','txt','csv','jpg','jpeg','png','tif','tiff','bmp','zip','rar','7z'];
+    var MAX_FILES = 10;
+    var MAX_TOTAL = 100 * 1024 * 1024; // 100 МБ
     var fileEl = document.getElementById('f-file');
     var fileDrop = document.getElementById('file-drop');
     var fileNameEl = document.getElementById('file-name');
+    var fileListEl = document.getElementById('file-list');
     var fileDefault = fileNameEl.textContent;
-    function resetFileUI() { fileNameEl.textContent = fileDefault; fileDrop.classList.remove('has-file'); }
-    fileEl.addEventListener('change', function () {
-      clearErr('f-file');
-      var f = fileEl.files[0];
-      if (f) { fileNameEl.textContent = f.name; fileDrop.classList.add('has-file'); } else { resetFileUI(); }
-    });
+    function fmtSize(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' МБ' : Math.max(1, Math.round(b / 1024)) + ' КБ'; }
+    function resetFileUI() { fileNameEl.textContent = fileDefault; fileDrop.classList.remove('has-file'); fileListEl.innerHTML = ''; }
+    function renderFiles() {
+      var files = fileEl.files, total = 0;
+      fileListEl.innerHTML = '';
+      if (!files.length) { resetFileUI(); return; }
+      for (var i = 0; i < files.length; i++) {
+        total += files[i].size;
+        var li = document.createElement('li');
+        var n = document.createElement('span'); n.className = 'fl-name'; n.textContent = files[i].name;
+        var s = document.createElement('span'); s.className = 'fl-size'; s.textContent = fmtSize(files[i].size);
+        li.appendChild(n); li.appendChild(s); fileListEl.appendChild(li);
+      }
+      fileNameEl.textContent = 'Выбрано файлов: ' + files.length + ' · ' + fmtSize(total);
+      fileDrop.classList.add('has-file');
+    }
+    fileEl.addEventListener('change', function () { clearErr('f-file'); renderFiles(); });
     function fileError() {
-      var f = fileEl.files[0];
-      if (!f) return null; // файл необязателен
-      var ext = (f.name.split('.').pop() || '').toLowerCase();
-      if (ALLOWED_EXT.indexOf(ext) === -1) return 'Разрешены только PDF, Word и Excel';
-      if (f.size > MAX_FILE) return 'Файл больше 10 МБ';
+      var files = fileEl.files;
+      if (!files.length) return null; // файлы необязательны
+      if (files.length > MAX_FILES) return 'Не более ' + MAX_FILES + ' файлов';
+      var total = 0;
+      for (var i = 0; i < files.length; i++) {
+        var ext = (files[i].name.split('.').pop() || '').toLowerCase();
+        if (ALLOWED_EXT.indexOf(ext) === -1) return 'Недопустимый тип файла: ' + files[i].name;
+        total += files[i].size;
+      }
+      if (total > MAX_TOTAL) return 'Суммарный размер файлов больше 100 МБ';
       return null;
     }
 
@@ -182,15 +200,15 @@
 
       if (firstBad) { document.getElementById(firstBad).focus(); return; }
 
-      var file = fileEl.files[0];
+      var files = fileEl.files;
       var reqOpts;
-      if (file) {
-        // с файлом — только multipart/form-data (браузер сам проставит Content-Type)
+      if (files.length) {
+        // с файлами — только multipart/form-data (браузер сам проставит Content-Type)
         var fd = new FormData();
         fd.append('name', name); fd.append('inn', inn); fd.append('phone', normPhone(phone));
         fd.append('email', email); fd.append('_honey', honey);
         fd.append('_subject', 'Заявка с сайта МТО-Альянс'); fd.append('_template', 'table');
-        fd.append('attachment', file, file.name);
+        for (var fi = 0; fi < files.length; fi++) { fd.append('attachment[]', files[fi], files[fi].name); }
         reqOpts = { method: 'POST', headers: { 'Accept': 'application/json' }, body: fd };
       } else {
         var payload = {
