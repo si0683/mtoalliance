@@ -157,14 +157,41 @@ h2 + .lead{margin-top:16px}
 .adv__card p{color:var(--muted);margin:10px 0 0;font-size:.95rem}
 
 /* ===== География ===== */
-.geo{position:relative;padding:clamp(70px,10vw,140px) 0;overflow:hidden}
-.geo__bg{position:absolute;inset:0}
-.geo__bg img{width:100%;height:100%;object-fit:cover}
-.geo__overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,10,13,.94),rgba(8,10,13,.6) 70%,rgba(8,10,13,.3));}
-.geo__content{position:relative;max-width:620px}
-.geo__content h2{font-size:clamp(1.9rem,3.6vw,2.8rem)}
-.geo__modes{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.geo__modes span{border:1px solid var(--line-2);background:rgba(20,25,34,.6);border-radius:999px;padding:.6em 1.2em;font-weight:600;font-size:.92rem}
+.geo{padding:clamp(60px,8vw,120px) 0}
+/* живая карта поставок */
+.geomap__modes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.geomap__mode{display:inline-flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);color:var(--muted);
+  font-weight:600;font-size:.9rem;padding:.6em 1.1em;border-radius:999px;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
+.geomap__mode:hover{color:var(--ink);border-color:var(--line-2)}
+.geomap__mode.is-active{color:#20160a;background:linear-gradient(100deg,var(--gold-deep),var(--gold-2));border-color:transparent}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot--rail{background:#e6c47a}
+.dot--auto{background:#8fb3d9}
+.dot--air{background:#f0d69a;box-shadow:0 0 0 2px rgba(240,214,154,.25)}
+.dot--office{background:var(--gold-2);box-shadow:0 0 0 3px rgba(216,178,94,.3)}
+.dot--city{background:transparent;border:2px solid var(--gold);width:11px;height:11px}
+.geomap__stage{position:relative;width:100%;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:radial-gradient(120% 140% at 50% 20%,rgba(216,178,94,.05),transparent 60%),var(--bg)}
+.geomap__img{display:block;width:100%;height:auto;opacity:.92}
+.geomap__svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.geomap__legend{display:flex;flex-wrap:wrap;gap:10px 22px;list-style:none;margin:16px 0 0;padding:0;color:var(--muted);font-size:.86rem}
+.geomap__legend li{display:flex;align-items:center;gap:8px}
+/* SVG-элементы */
+.route{fill:none;stroke-width:1.6;opacity:.55;transition:opacity .35s}
+.route--rail{stroke:#e6c47a}
+.route--auto{stroke:#8fb3d9;stroke-dasharray:7 6}
+.route--air{stroke:#f0d69a;stroke-dasharray:1.5 7;stroke-linecap:round}
+.route.dim{opacity:.06}
+.node{fill:var(--bg-2);stroke:var(--gold);stroke-width:2;transition:transform .2s}
+.node--office{fill:var(--gold-2);stroke:#fff3d6}
+.pulse{fill:none;stroke:var(--gold-2);transform-box:fill-box;transform-origin:center;animation:mapPulse 2.6s ease-out infinite}
+.cargo{fill:#fff2cf;filter:drop-shadow(0 0 3px rgba(255,220,140,.9))}
+.node-label{fill:#f0d69a;font-size:13px;font-weight:700;font-family:system-ui,sans-serif;paint-order:stroke;stroke:rgba(8,10,13,.85);stroke-width:3px}
+@keyframes mapPulse{0%{transform:scale(1);opacity:.55}70%{transform:scale(3.2);opacity:0}100%{opacity:0}}
+.geomap__tip{position:absolute;z-index:5;transform:translate(-50%,-140%);background:rgba(10,12,15,.95);border:1px solid var(--line-2);
+  color:var(--ink);font-size:.82rem;font-weight:600;padding:6px 10px;border-radius:8px;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow)}
+@media (max-width:560px){ .node-label{font-size:20px} .geomap__legend{font-size:.8rem} }
+@media (prefers-reduced-motion:reduce){ .pulse{animation:none;opacity:0} }
 
 /* ===== Команда ===== */
 .team{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}

@@ -260,4 +260,106 @@
         });
     });
   }
+
+  // ===== Живая карта поставок =====
+  (function initMap() {
+    var svg = document.querySelector('.geomap__svg');
+    if (!svg) return;
+    var tip = document.getElementById('geomap-tip');
+    var NS = 'http://www.w3.org/2000/svg';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var VW = 1500, VH = 414;
+
+    var C = [
+      { n: 'Москва', x: 189.6, y: 252.5 },
+      { n: 'Санкт-Петербург', x: 128.7, y: 217.5 },
+      { n: 'Мурманск', x: 151.8, y: 142.3 },
+      { n: 'Краснодар', x: 201.0, y: 341.7 },
+      { n: 'Самара', x: 294.0, y: 273.7, office: true },
+      { n: 'Казань', x: 285.4, y: 252.1 },
+      { n: 'Уфа', x: 342.5, y: 260.9 },
+      { n: 'Екатеринбург', x: 381.2, y: 243.4 },
+      { n: 'Тюмень', x: 422.2, y: 240.8 },
+      { n: 'Сургут', x: 487.7, y: 206.6 },
+      { n: 'Новый Уренгой', x: 515.1, y: 166.4 },
+      { n: 'Новосибирск', x: 567.0, y: 258.5 },
+      { n: 'Норильск', x: 611.0, y: 139.1 },
+      { n: 'Красноярск', x: 649.9, y: 250.3 },
+      { n: 'Иркутск', x: 745.2, y: 281.3 },
+      { n: 'Хабаровск', x: 1001.5, y: 313.0 },
+      { n: 'Владивосток', x: 975.0, y: 357.7 }
+    ];
+    var routes = [
+      { a: 7, b: 9, m: 'rail' }, { a: 0, b: 5, m: 'rail' }, { a: 11, b: 13, m: 'rail' },
+      { a: 6, b: 8, m: 'rail' }, { a: 13, b: 14, m: 'rail' }, { a: 3, b: 0, m: 'rail' },
+      { a: 5, b: 6, m: 'auto' }, { a: 7, b: 8, m: 'auto' }, { a: 1, b: 0, m: 'auto' },
+      { a: 11, b: 7, m: 'auto' }, { a: 6, b: 4, m: 'auto' },
+      { a: 0, b: 16, m: 'air' }, { a: 9, b: 10, m: 'air' }, { a: 11, b: 12, m: 'air' },
+      { a: 0, b: 15, m: 'air' }, { a: 1, b: 13, m: 'air' }, { a: 2, b: 0, m: 'air' }, { a: 4, b: 14, m: 'air' }
+    ];
+    function el(t, a) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); return e; }
+
+    var cargos = [];
+    routes.forEach(function (r) {
+      var a = C[r.a], b = C[r.b];
+      var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+      var px = -dy / len, py = dx / len; if (py > 0) { px = -px; py = -py; } // выгиб вверх
+      var k = (r.m === 'air') ? 0.28 : 0.12;
+      var cx = mx + px * len * k, cy = my + py * len * k;
+      var path = el('path', { d: 'M' + a.x + ' ' + a.y + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + b.x + ' ' + b.y, 'class': 'route route--' + r.m });
+      svg.appendChild(path);
+      var cargo = el('circle', { r: 3.2, 'class': 'cargo' });
+      svg.appendChild(cargo);
+      r._path = path;
+      cargos.push({ a: a, c: { x: cx, y: cy }, b: b, len: len, el: cargo, t: Math.random(), mode: r.m });
+    });
+
+    function showTip(c) { tip.hidden = false; tip.textContent = c.n + (c.office ? ' · центральный офис' : ''); tip.style.left = (c.x / VW * 100) + '%'; tip.style.top = (c.y / VH * 100) + '%'; }
+    function hideTip() { tip.hidden = true; }
+
+    C.forEach(function (c) {
+      if (!reduce) svg.appendChild(el('circle', { cx: c.x, cy: c.y, r: c.office ? 6 : 4, 'class': 'pulse' }));
+      var node = el('circle', { cx: c.x, cy: c.y, r: c.office ? 6.5 : 4.5, 'class': 'node' + (c.office ? ' node--office' : ''), tabindex: 0, role: 'img' });
+      node.setAttribute('aria-label', c.n);
+      var title = el('title', {}); title.textContent = c.n; node.appendChild(title);
+      node.addEventListener('mouseenter', function () { showTip(c); });
+      node.addEventListener('mouseleave', hideTip);
+      node.addEventListener('focus', function () { showTip(c); });
+      node.addEventListener('blur', hideTip);
+      svg.appendChild(node);
+      if (c.office) { var lb = el('text', { x: c.x, y: c.y - 13, 'text-anchor': 'middle', 'class': 'node-label' }); lb.textContent = 'Самара'; svg.appendChild(lb); }
+    });
+
+    var mode = 'all';
+    function apply() {
+      routes.forEach(function (r) { r._path.classList.toggle('dim', !(mode === 'all' || mode === r.m)); });
+      cargos.forEach(function (cg) { cg.el.style.display = (mode === 'all' || mode === cg.mode) ? '' : 'none'; });
+    }
+    document.querySelectorAll('.geomap__mode').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.geomap__mode').forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active'); mode = btn.getAttribute('data-mode'); apply();
+      });
+    });
+    apply();
+
+    function qbez(t, a, c, b) { var u = 1 - t; return { x: u * u * a.x + 2 * u * t * c.x + t * t * b.x, y: u * u * a.y + 2 * u * t * c.y + t * t * b.y }; }
+    if (reduce) {
+      cargos.forEach(function (cg) { var p = qbez(0.5, cg.a, cg.c, cg.b); cg.el.setAttribute('cx', p.x.toFixed(1)); cg.el.setAttribute('cy', p.y.toFixed(1)); });
+      return;
+    }
+    var last = performance.now();
+    function frame(now) {
+      var dt = now - last; last = now;
+      cargos.forEach(function (cg) {
+        if (cg.el.style.display === 'none') return;
+        cg.t += dt * 0.06 / cg.len; if (cg.t > 1) cg.t -= 1;
+        var p = qbez(cg.t, cg.a, cg.c, cg.b);
+        cg.el.setAttribute('cx', p.x.toFixed(1)); cg.el.setAttribute('cy', p.y.toFixed(1));
+      });
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
 })();

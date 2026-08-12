@@ -224,19 +224,34 @@
     </div>
   </section>
 
-  <!-- ===== География ===== -->
+  <!-- ===== География: живая карта поставок ===== -->
   <section class="geo" id="geo">
-    <div class="geo__bg"><img src="assets/img/geo.webp" alt="Карта поставок по России" loading="lazy"></div>
-    <div class="geo__overlay"></div>
-    <div class="wrap geo__content reveal">
-      <span class="tag">География поставок</span>
-      <h2>Поставки по всей территории России</h2>
-      <p class="lead">Железнодорожные, автотранспортные и авиационные отгрузки в ежедневном режиме
-        с контролем прохождения грузов на всём этапе их следования.</p>
-      <div class="geo__modes">
-        <span>🚆 Железная дорога</span>
-        <span>🚛 Автотранспорт</span>
-        <span>✈ Авиаперевозки</span>
+    <div class="wrap">
+      <div class="section__head reveal">
+        <span class="tag">География поставок</span>
+        <h2>Поставки по всей территории России</h2>
+        <p class="section__sub">Отгружаем продукцию с заводов-партнёров по всей стране — железнодорожным,
+          автомобильным и авиатранспортом, с контролем груза на всём пути. Центральный офис — в Самаре.</p>
+      </div>
+
+      <div class="geomap reveal" id="geo-map">
+        <div class="geomap__modes" role="group" aria-label="Вид транспорта">
+          <button type="button" class="geomap__mode is-active" data-mode="all">Все маршруты</button>
+          <button type="button" class="geomap__mode" data-mode="rail"><span class="dot dot--rail"></span>Ж/д</button>
+          <button type="button" class="geomap__mode" data-mode="auto"><span class="dot dot--auto"></span>Авто</button>
+          <button type="button" class="geomap__mode" data-mode="air"><span class="dot dot--air"></span>Авиа</button>
+        </div>
+
+        <div class="geomap__stage">
+          <img class="geomap__img" src="assets/img/rf-map.webp" alt="Карта России — география поставок" loading="lazy" width="1500" height="414">
+          <svg class="geomap__svg" viewBox="0 0 1500 414" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+          <div class="geomap__tip" id="geomap-tip" hidden></div>
+        </div>
+
+        <ul class="geomap__legend">
+          <li><span class="dot dot--office"></span>Центральный офис (Самара)</li>
+          <li><span class="dot dot--city"></span>Города поставок</li>
+        </ul>
       </div>
     </div>
   </section>
