@@ -1,0 +1,37 @@
+---
+// Почему МТО-Альянс: карточки преимуществ
+---
+
+<section class="section" id="advantages">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="tag">Почему МТО-Альянс</span>
+      <h2>Надёжный поставщик в долгосрочной перспективе</h2>
+    </div>
+    <div class="adv">
+      <div class="adv__card reveal"><div class="adv__ic">⏱</div><h4>Кратчайшие сроки</h4><p>Отгрузка продукции в ежедневном режиме и строгое соблюдение сроков поставки.</p></div>
+      <div class="adv__card reveal"><div class="adv__ic">✔</div><h4>Гарантия качества</h4><p>Вся продукция сертифицирована и соответствует международным стандартам.</p></div>
+      <div class="adv__card reveal"><div class="adv__ic">◎</div><h4>Контроль на всех этапах</h4><p>Логистическая служба контролирует прохождение грузов на всём пути следования.</p></div>
+      <div class="adv__card reveal"><div class="adv__ic">⚙</div><h4>Собственное КБ</h4><p>Заводы-партнёры внедряют уникальные разработки собственного конструкторского бюро.</p></div>
+      <div class="adv__card reveal"><div class="adv__ic">₽</div><h4>Прозрачная оплата</h4><p>Удобные и понятные схемы расчётов, включая лизинг.</p></div>
+      <div class="adv__card reveal"><div class="adv__ic">🤝</div><h4>Работа с заказчиком</h4><p>Постоянное взаимодействие со службами Заказчика на каждом этапе.</p></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .adv{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .adv__card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:transform .2s,border-color .2s}
+  .adv__card:hover{transform:translateY(-5px);border-color:var(--gold-deep)}
+  .adv__ic{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;font-size:1.5rem;
+    background:linear-gradient(135deg,rgba(216,178,94,.18),rgba(216,178,94,.05));border:1px solid var(--line-2);margin-bottom:16px}
+  .adv__card h4{font-size:1.15rem}
+  .adv__card p{color:var(--muted);margin:10px 0 0;font-size:.95rem}
+
+  @media (max-width:1024px){
+    .adv{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .adv{grid-template-columns:1fr}
+  }
+</style>

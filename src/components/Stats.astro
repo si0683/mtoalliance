@@ -1,0 +1,30 @@
+---
+// Счётчики достижений (анимация count-up в main.js)
+---
+
+<section class="stats" id="stats">
+  <div class="wrap stats__grid">
+    <div class="stat reveal"><b data-count="27">27</b><span>лет успешной работы</span></div>
+    <div class="stat reveal"><b data-count="6480">6480</b><span>контрактов завершено</span></div>
+    <div class="stat reveal"><b data-count="817">817</b><span>партнёров-поставщиков по всему миру</span></div>
+    <div class="stat reveal"><b data-count="238">238</b><span>наименований в каталоге поставок</span></div>
+  </div>
+</section>
+
+<style>
+  .stats{background:linear-gradient(180deg,var(--bg),var(--bg-2));border-block:1px solid var(--line);padding:clamp(36px,5vw,56px) 0}
+  .stats__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .stat{text-align:center;position:relative}
+  .stat:not(:last-child)::after{content:"";position:absolute;right:-12px;top:15%;height:70%;width:1px;background:var(--line)}
+  .stat b{display:block;font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:800;line-height:1;
+    background:linear-gradient(180deg,var(--gold-2),var(--gold-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{display:block;margin-top:10px;color:var(--muted);font-size:.92rem;letter-spacing:.02em}
+
+  @media (max-width:1024px){
+    .stats__grid{grid-template-columns:repeat(2,1fr);gap:30px 24px}
+    .stat:nth-child(2)::after{display:none}
+  }
+  @media (max-width:560px){
+    .stats__grid{grid-template-columns:1fr 1fr}
+  }
+</style>

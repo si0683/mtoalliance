@@ -1,0 +1,109 @@
+---
+// Контакты и форма заявки (валидация и отправка — src/scripts/main.js)
+---
+
+<section class="section" id="contacts">
+  <div class="wrap contacts">
+    <div class="contacts__info reveal">
+      <span class="tag">Контакты</span>
+      <h2>Обсудим вашу поставку</h2>
+      <p class="lead">Оставьте заявку — менеджер свяжется с вами и подготовит предложение по вашему оборудованию.</p>
+      <div class="cinfo"><span class="cinfo__label">Телефон</span><p><a href="tel:88469799999">8 (846) 979-99-99</a></p></div>
+      <div class="cinfo"><span class="cinfo__label">E-mail</span><p><a href="mailto:info@mto-smr.ru">info@mto-smr.ru</a></p></div>
+      <div class="cinfo"><span class="cinfo__label">Компания</span><p>MTO ALLIANCE · «МТО-Альянс», г. Самара</p></div>
+    </div>
+    <form class="contacts__form reveal" id="form" method="POST" novalidate>
+      <!-- honeypot: скрытое поле-ловушка для ботов -->
+      <input type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0" />
+      <div class="field">
+        <input type="text" id="f-name" required placeholder=" " autocomplete="name" />
+        <label for="f-name">Ваше имя</label>
+        <span class="err" id="err-name"></span>
+      </div>
+      <div class="field">
+        <input type="text" id="f-inn" inputmode="numeric" maxlength="12" required placeholder=" " />
+        <label for="f-inn">ИНН компании</label>
+        <span class="err" id="err-inn"></span>
+      </div>
+      <div class="field">
+        <input type="tel" id="f-phone" inputmode="tel" required placeholder=" " autocomplete="tel" />
+        <label for="f-phone">Телефон</label>
+        <span class="err" id="err-phone"></span>
+      </div>
+      <div class="field">
+        <input type="email" id="f-email" required placeholder=" " autocomplete="email" />
+        <label for="f-email">E-mail</label>
+        <span class="err" id="err-email"></span>
+      </div>
+      <div class="field field--file">
+        <input type="file" id="f-file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odp,.odt,.ods,.rtf,.txt,.csv,.jpg,.jpeg,.png,.tif,.tiff,.bmp,.zip,.rar,.7z" />
+        <label for="f-file" class="file-drop" id="file-drop">
+          <span class="file-drop__ic" aria-hidden="true">📎</span>
+          <span class="file-drop__txt" id="file-name">Прикрепите или перетащите файлы</span>
+          <span class="file-drop__hint">до 10 файлов · суммарно до 100&nbsp;МБ</span>
+        </label>
+        <ul class="file-list" id="file-list"></ul>
+        <span class="err" id="err-file"></span>
+      </div>
+      <div class="field field--captcha">
+        <label for="f-captcha" class="captcha-q" id="captcha-label">Защита от ботов</label>
+        <input type="text" id="f-captcha" inputmode="numeric" maxlength="3" required placeholder="Введите ответ" autocomplete="off" />
+        <span class="err" id="err-captcha"></span>
+      </div>
+      <button type="submit" class="btn btn--block">Отправить заявку</button>
+      <p class="form__formats">Можно прикрепить: PDF, Word (doc, docx), Excel (xls, xlsx), PowerPoint (ppt, pptx), OpenDocument (odt, ods, odp), RTF, TXT, CSV, изображения (jpg, png, tif, bmp), архивы (zip, rar, 7z). До 10 файлов, суммарно до 100&nbsp;МБ.</p>
+      <p class="form__note" id="form-note" hidden></p>
+    </form>
+  </div>
+</section>
+
+<!-- is:global: список выбранных файлов (li, .fl-name/.fl-size/.fl-remove) создаётся из main.js
+     уже после сборки и не получает scoped-атрибут Astro, поэтому стили формы держим глобальными. -->
+<style is:global>
+  .contacts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,5vw,64px);align-items:start}
+  .cinfo{padding:16px 0;border-bottom:1px solid var(--line)}
+  .cinfo__label{display:block;font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin-bottom:5px}
+  .cinfo p{margin:0;font-size:1.12rem;font-weight:600}
+  .cinfo a:hover{color:var(--gold-2)}
+  .contacts__form{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:18px;box-shadow:var(--shadow)}
+  .field{position:relative}
+  .field input,.field textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg-2);border:1.5px solid var(--line);border-radius:11px;padding:16px 14px 8px;transition:border-color .15s;resize:vertical}
+  .field textarea{min-height:84px}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--gold-deep)}
+  .field label{position:absolute;left:15px;top:14px;color:var(--muted-2);pointer-events:none;transition:.15s}
+  .field input:focus+label,.field input:not(:placeholder-shown)+label,
+  .field textarea:focus+label,.field textarea:not(:placeholder-shown)+label{top:6px;font-size:.68rem;color:var(--gold-2);font-weight:700;letter-spacing:.04em}
+  /* капча: вопрос — обычной подписью над полем (не плавающий label) */
+  .field--captcha label.captcha-q{position:static;display:block;pointer-events:auto;margin:0 0 8px;font-size:.82rem;font-weight:600;letter-spacing:normal;color:var(--muted)}
+  .field--captcha input{padding:13px 14px}
+  .form__note{margin:0;text-align:center;font-weight:600;color:var(--gold-2)}
+  .form__note--error{color:#e57373}
+  .field .err{display:none;color:#e57373;font-size:.78rem;margin-top:6px}
+  .field.invalid .err{display:block}
+  .field.invalid input,.field.invalid textarea{border-color:#e57373}
+  .field.invalid label{color:#e57373}
+  /* file upload */
+  .field--file input[type=file]{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;padding:0;margin:0}
+  .field--file label.file-drop{position:static;left:auto;top:auto;pointer-events:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;width:100%;padding:15px 16px;border:1.5px dashed var(--line-2);border-radius:11px;background:var(--bg-2);color:var(--muted);cursor:pointer;transition:border-color .15s,color .15s,background .15s;font-size:1rem;font-weight:400;letter-spacing:normal}
+  .file-drop:hover{border-color:var(--gold-deep);color:var(--ink)}
+  .field--file input[type=file]:focus-visible + .file-drop{border-color:var(--gold-deep);color:var(--ink)}
+  .file-drop.has-file{border-style:solid;border-color:var(--gold-deep);color:var(--ink);background:rgba(216,178,94,.06)}
+  .field--file label.file-drop.dragover{border-style:dashed;border-color:var(--gold);color:var(--ink);background:rgba(216,178,94,.14)}
+  .file-drop__ic{font-size:1.15rem;line-height:1}
+  .file-drop__txt{flex:1 1 auto;min-width:0;font-size:.94rem;line-height:1.35}
+  .file-drop__hint{font-size:.76rem;color:var(--muted-2);white-space:nowrap}
+  .field--file.invalid .file-drop{border-color:#e57373;color:#e57373}
+  .field--file.invalid label{color:inherit}
+  .file-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .file-list li{display:flex;align-items:center;gap:10px;font-size:.86rem;background:var(--bg-2);border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+  .file-list li::before{content:"📄";font-size:.95rem}
+  .file-list .fl-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+  .file-list .fl-size{color:var(--muted-2);white-space:nowrap;font-size:.8rem}
+  .fl-remove{flex:none;width:24px;height:24px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted-2);font-size:1.25rem;line-height:1;cursor:pointer;transition:color .15s,background .15s}
+  .fl-remove:hover{color:#e57373;background:rgba(229,115,115,.14)}
+  .form__formats{margin:0;font-size:.76rem;line-height:1.55;color:var(--muted-2);text-align:center}
+
+  @media (max-width:860px){
+    .contacts{grid-template-columns:minmax(0,1fr)}
+  }
+</style>

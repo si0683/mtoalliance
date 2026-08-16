@@ -1,0 +1,57 @@
+---
+// Руководство компании
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<section class="section section--alt" id="team">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="tag">Руководство</span>
+      <h2>Команда, которой доверяют</h2>
+    </div>
+    <div class="team">
+      <figure class="member reveal">
+        <div class="member__ph"><img src={`${base}/assets/img/team-karpov.webp`} alt="Карпов Александр Иванович" loading="lazy" /></div>
+        <figcaption><b>Карпов Александр Иванович</b><span>Директор</span></figcaption>
+      </figure>
+      <figure class="member reveal">
+        <div class="member__ph"><img src={`${base}/assets/img/team-povalyaev.webp`} alt="Поваляев Виталий Михайлович" loading="lazy" /></div>
+        <figcaption><b>Поваляев Виталий Михайлович</b><span>Директор департамента МТО</span>
+          <a href="tel:88469799999,302">8 (846) 979-99-99 доб. 302</a>
+          <a href="mailto:pvm@mto-smr.ru">pvm@mto-smr.ru</a></figcaption>
+      </figure>
+      <figure class="member reveal">
+        <div class="member__ph"><img src={`${base}/assets/img/team-lyskov.webp`} alt="Лысков Илья Владимирович" loading="lazy" /></div>
+        <figcaption><b>Лысков Илья Владимирович</b><span>Директор департамента продаж</span>
+          <a href="tel:88469799999,314">8 (846) 979-99-99 доб. 314</a>
+          <a href="mailto:liv@mto-smr.ru">liv@mto-smr.ru</a></figcaption>
+      </figure>
+      <figure class="member reveal">
+        <div class="member__ph"><img src={`${base}/assets/img/team-shumakova.webp`} alt="Шумакова Анна Анатольевна" loading="lazy" /></div>
+        <figcaption><b>Шумакова Анна Анатольевна</b><span>Главный бухгалтер</span>
+          <a href="tel:88469799999,336">8 (846) 979-99-99 доб. 336</a>
+          <a href="mailto:saa@mto-smr.ru">saa@mto-smr.ru</a></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .team{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .member{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s}
+  .member:hover{transform:translateY(-5px);border-color:var(--gold-deep)}
+  .member__ph{aspect-ratio:1;overflow:hidden;background:var(--panel-2)}
+  .member__ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(.15)}
+  .member figcaption{padding:18px 20px 22px;display:flex;flex-direction:column;gap:3px}
+  .member figcaption b{font-size:1.02rem}
+  .member figcaption span{color:var(--gold-2);font-size:.85rem;margin-bottom:8px}
+  .member figcaption a{color:var(--muted);font-size:.85rem}
+  .member figcaption a:hover{color:var(--ink)}
+
+  @media (max-width:1024px){
+    .team{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .team{grid-template-columns:1fr}
+  }
+</style>

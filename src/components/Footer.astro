@@ -1,0 +1,44 @@
+---
+// Подвал: бренд, направления, контакты, копирайт (год подставляет main.js)
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <div class="footer__col footer__brand">
+      <img src={`${base}/logo.svg`} alt="MTO Alliance" class="brand__logo" />
+      <p>Проверенный поставщик нефтегазового оборудования и рефрижераторных контейнеров. Поставки по всей России с 1998 года.</p>
+    </div>
+    <div class="footer__col">
+      <h5>Направления</h5>
+      <a href="#neftegaz">Нефтегазовое оборудование</a>
+      <a href="#reefer">Рефрижераторные контейнеры</a>
+      <a href="#geo">География поставок</a>
+    </div>
+    <div class="footer__col">
+      <h5>Контакты</h5>
+      <a href="tel:88469799999">8 (846) 979-99-99</a>
+      <a href="mailto:info@mto-smr.ru">info@mto-smr.ru</a>
+      <span>г. Самара</span>
+    </div>
+  </div>
+  <div class="wrap footer__copy">© <span id="year">2025</span> MTO ALLIANCE · «МТО-Альянс». Все права защищены.</div>
+</footer>
+
+<style>
+  .footer{background:#07090c;border-top:1px solid var(--line);padding:56px 0 30px}
+  .footer__inner{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:36px;padding-bottom:34px;border-bottom:1px solid var(--line)}
+  .footer__brand .brand__logo{height:30px;margin-bottom:16px}
+  .footer__brand p{color:var(--muted);font-size:.92rem;max-width:44ch;margin:0}
+  .footer__col h5{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-2);margin:0 0 14px;font-weight:700}
+  .footer__col a,.footer__col span{display:block;color:var(--muted);font-size:.94rem;margin-bottom:9px}
+  .footer__col a:hover{color:var(--gold-2)}
+  .footer__copy{padding-top:22px;color:var(--muted-2);font-size:.85rem}
+
+  @media (max-width:860px){
+    .footer__inner{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .footer__inner{grid-template-columns:1fr}
+  }
+</style>

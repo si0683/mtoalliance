@@ -1,0 +1,47 @@
+---
+// О компании: текст + карточка с фото
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<section class="section" id="about">
+  <div class="wrap about__grid">
+    <div class="reveal">
+      <span class="tag">О компании</span>
+      <h2>Время первых — время «МТО-Альянс»</h2>
+      <p class="lead">«МТО-Альянс» — проверенный поставщик нефтегазового оборудования и вагонов,
+        который гарантирует самые короткие сроки поставки готовой продукции.</p>
+      <p>Мы были первыми, кто начал ценить простоту и надёжность поставляемого оборудования выше
+        собственной прибыли, и первыми, кто решил проблему долгих поставок на российском рынке
+        транспортного машиностроения — начав сотрудничать с заводами на особых и взаимовыгодных условиях.</p>
+      <p>Компания уделяет самое высокое внимание стандартам качества: вся продукция имеет необходимые
+        сертификаты и соответствует международным требованиям. Часть заводов-партнёров перешла на
+        автоматизированное производство и внедряет разработки собственного конструкторского бюро —
+        это сокращает сроки и позволяет выполнять нестандартные заказы.</p>
+    </div>
+    <div class="about__aside reveal">
+      <div class="about__card">
+        <img src={`${base}/assets/img/adv-leasing.webp`} alt="Заключение контракта" loading="lazy" />
+        <div class="about__cardcap">
+          <b>Прозрачные условия</b>
+          <span>Удобные схемы оплаты, включая лизинг</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid{display:grid;grid-template-columns:1.35fr .9fr;gap:clamp(30px,5vw,64px);align-items:center}
+  .about__grid p{color:var(--muted);margin:14px 0 0}
+  .about__grid .lead{color:var(--ink)}
+  .about__card{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .about__card img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/5}
+  .about__cardcap{position:absolute;left:0;right:0;bottom:0;padding:22px;background:linear-gradient(0deg,rgba(8,10,13,.92),transparent)}
+  .about__cardcap b{display:block;color:var(--gold-2);font-size:1.1rem}
+  .about__cardcap span{color:var(--muted);font-size:.9rem}
+
+  @media (max-width:1024px){
+    .about__grid{grid-template-columns:1fr}
+    .about__aside{max-width:420px}
+  }
+</style>

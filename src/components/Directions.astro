@@ -1,0 +1,48 @@
+---
+// Два ключевых направления поставок
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<section class="section section--alt" id="directions">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="tag">Направления</span>
+      <h2>Два ключевых направления поставок</h2>
+    </div>
+    <div class="dirs">
+      <a href="#neftegaz" class="dir reveal">
+        <div class="dir__img"><img src={`${base}/assets/img/neftegaz.webp`} alt="Нефтегазовое оборудование" loading="lazy" /></div>
+        <div class="dir__body">
+          <h3>Нефтегазовое оборудование</h3>
+          <p>Буровое, насосное и вспомогательное оборудование, трубопроводная арматура, ёмкости и блочно-модульные решения — более 238 наименований.</p>
+          <span class="link">Смотреть каталог →</span>
+        </div>
+      </a>
+      <a href="#reefer" class="dir reveal">
+        <div class="dir__img"><img src={`${base}/assets/img/reefer.webp`} alt="Рефрижераторные контейнеры" loading="lazy" /></div>
+        <div class="dir__body">
+          <h3>Рефрижераторные контейнеры</h3>
+          <p>Контейнеры 10, 20 и 40 футов с более 60% отечественных комплектующих. Единственный в России сервисный центр обслуживания.</p>
+          <span class="link">Характеристики →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dirs{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .dir{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel);transition:transform .25s,border-color .25s,box-shadow .25s;display:flex;flex-direction:column}
+  .dir:hover{transform:translateY(-6px);border-color:var(--gold-deep);box-shadow:var(--shadow)}
+  .dir__img{aspect-ratio:16/8;overflow:hidden}
+  .dir__img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+  .dir:hover .dir__img img{transform:scale(1.05)}
+  .dir__body{padding:26px}
+  .dir__body h3{font-size:1.4rem}
+  .dir__body p{color:var(--muted);margin:12px 0 16px;font-size:.98rem}
+  .link{color:var(--gold-2);font-weight:600;font-size:.95rem}
+
+  @media (max-width:860px){
+    .dirs{grid-template-columns:minmax(0,1fr)}
+  }
+</style>

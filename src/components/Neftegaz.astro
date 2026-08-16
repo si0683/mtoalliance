@@ -1,0 +1,50 @@
+---
+// Категории нефтегазового оборудования
+---
+
+<section class="section" id="neftegaz">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="tag">Нефтегазовое оборудование</span>
+      <h2>Полный спектр бурового и промыслового оборудования</h2>
+      <p class="section__sub">Поставляем оборудование ведущих российских и зарубежных заводов. Ниже — основные группы каталога.</p>
+    </div>
+    <div class="cats">
+      <div class="cat reveal"><h4>Буровые насосы</h4><p>УНБ-600, УНБТ-950L, УНБТ-1180, НБТ-600/750 и комплектующие</p></div>
+      <div class="cat reveal"><h4>Буровые лебёдки</h4><p>БЛ-950, ЛБУ-750…1500 и запасные части</p></div>
+      <div class="cat reveal"><h4>Система верхнего привода</h4><p>Вертлюги буровые БВ-100…БВ-320</p></div>
+      <div class="cat reveal"><h4>Роторы</h4><p>Р-560, Р-700, РУ-200…РУ-560</p></div>
+      <div class="cat reveal"><h4>Циркуляционные системы</h4><p>Вибросита, дегазаторы, гидроциклоны, пескоотделители</p></div>
+      <div class="cat reveal"><h4>Элеваторы и штропы</h4><p>КМ, КМЛ, ЭН, ЭТАД; штропы буровые ШБД и ШЭ</p></div>
+      <div class="cat reveal"><h4>Ключи и гидростанции</h4><p>КМБ, КМТ, УМК, YZB-120, HH.YZ.1000F</p></div>
+      <div class="cat reveal"><h4>Кронблоки и крюкоблоки</h4><p>УКБ 6-250…7-500, МБУ125…180</p></div>
+      <div class="cat reveal"><h4>Насосы ЦНС</h4><p>ЦНС для сеноманской воды и повышения пластового давления</p></div>
+      <div class="cat reveal"><h4>Трубопроводная арматура</h4><p>Задвижки, затворы, клапаны, краны шаровые Ду50…1400</p></div>
+      <div class="cat reveal"><h4>Ёмкостное оборудование</h4><p>ЕП, ЕТ, септики, РГСН/РГСП, блочно-модульные ёмкости</p></div>
+      <div class="cat reveal"><h4>Блочно-модульные котельные</h4><p>БМК, БКУ, ТКУ мощностью до 200 МВт</p></div>
+    </div>
+    <div class="cats__more reveal">
+      <span>И ещё десятки позиций: аварийно-ловильный инструмент, дозирование реагентов, трансформаторные подстанции, газоанализаторы Flir/Fluke, дефектоскопия, добавки для бетона и др.</span>
+      <a href="#contacts" class="btn btn--sm">Запросить полный каталог</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .cat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;transition:transform .2s,border-color .2s,background .2s}
+  .cat:hover{transform:translateY(-4px);border-color:var(--gold-deep);background:var(--panel-2)}
+  .cat h4{font-size:1.06rem;margin-bottom:8px}
+  .cat h4::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:linear-gradient(135deg,var(--gold),var(--gold-2));margin-right:10px;vertical-align:middle}
+  .cat p{color:var(--muted);font-size:.88rem;margin:0}
+  .cats__more{margin-top:26px;display:flex;flex-wrap:wrap;gap:18px 26px;align-items:center;justify-content:space-between;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 26px}
+  .cats__more span{color:var(--muted);font-size:.95rem;max-width:70ch}
+
+  @media (max-width:1024px){
+    .cats{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .cats{grid-template-columns:1fr}
+  }
+</style>

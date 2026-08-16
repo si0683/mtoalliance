@@ -1,0 +1,74 @@
+---
+// Рефрижераторные контейнеры: преимущества, таблица характеристик, список
+---
+
+<section class="section section--alt" id="reefer">
+  <div class="wrap">
+    <div class="section__head reveal">
+      <span class="tag">Рефрижераторные контейнеры</span>
+      <h2>Держите холод под контролем</h2>
+      <p class="section__sub">Современные рефрижераторные контейнеры с более 60% отечественных комплектующих и передовыми техническими решениями. Надёжное хранение и транспортировка с сохранением свежести на всём пути.</p>
+    </div>
+
+    <div class="reefer__features">
+      <div class="rf reveal"><b>60%+</b><span>комплектующих российского производства</span></div>
+      <div class="rf reveal"><b>Ед.</b><span>единственный в России сервисный центр обслуживания и ремонта</span></div>
+      <div class="rf reveal"><b>−25…+25°C</b><span>внутренний температурный режим камеры</span></div>
+      <div class="rf reveal"><b>от 3 недель</b><span>срок поставки</span></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead>
+          <tr><th>Характеристика</th><th>10 футов</th><th>20 футов</th><th>40 футов</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Длина (внешн.), мм</td><td>2991</td><td>6058</td><td>12192</td></tr>
+          <tr><td>Ширина (внешн.), мм</td><td>2438</td><td>2438</td><td>2438</td></tr>
+          <tr><td>Высота (внешн.), мм</td><td>2896 / 2591</td><td>2591</td><td>2591</td></tr>
+          <tr><td>Внутренний объём</td><td>9,95–11,3 м³</td><td>27,08 м³</td><td>58,61 м³</td></tr>
+          <tr><td>Вместимость (европаллеты)</td><td>3 шт</td><td>10 шт</td><td>22 шт</td></tr>
+          <tr><td>Хладопроизводительность</td><td>2900 ккал/ч</td><td>4900 ккал/ч</td><td>4900 ккал/ч</td></tr>
+          <tr><td>Электропотребление</td><td>3,0 кВт·ч</td><td>5,0 кВт·ч</td><td>5,0 кВт·ч</td></tr>
+          <tr><td>Эксплуатация</td><td>−45…+45°C</td><td>−45…+45°C</td><td>−45…+45°C</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ul class="reefer__list reveal">
+      <li>Внутренняя отделка из негорючих PIR-панелей, наружная сторона — пищевая нержавеющая сталь AISI 304</li>
+      <li>Дверные блоки с композитными вставками против «мостиков холода» и встроенным нагревательным элементом</li>
+      <li>Автоматическое включение освещения и отключение вентиляторов при открытии двери</li>
+      <li>Светодиодное освещение — не менее 5 лет без сервиса; возможность работы «на тепло»</li>
+      <li>Независимая система мониторинга и диспетчеризации (GPS); питание 380 В, 50 Гц; фреон R404A / R507A</li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .reefer__features{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:34px}
+  .rf{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px}
+  .rf b{display:block;font-size:1.5rem;font-weight:800;color:var(--gold-2);line-height:1.1}
+  .rf span{display:block;margin-top:8px;color:var(--muted);font-size:.9rem}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  .spec{width:100%;border-collapse:collapse;min-width:620px}
+  .spec th,.spec td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--line);font-size:.95rem}
+  .spec thead th{background:var(--panel-2);color:var(--gold-2);font-weight:700;letter-spacing:.02em;position:sticky;top:0}
+  .spec th:first-child,.spec td:first-child{color:var(--muted)}
+  .spec tbody tr:last-child td{border-bottom:0}
+  .spec tbody tr:hover{background:rgba(255,255,255,.02)}
+  .spec td:not(:first-child),.spec th:not(:first-child){font-weight:600}
+  .reefer__list{margin:28px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 30px}
+  .reefer__list li{position:relative;padding-left:28px;color:var(--muted);font-size:.96rem}
+  .reefer__list li::before{content:"";position:absolute;left:0;top:9px;width:12px;height:12px;border-radius:3px;background:linear-gradient(135deg,var(--gold),var(--gold-2))}
+
+  @media (max-width:1024px){
+    .reefer__features{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:860px){
+    .reefer__list{grid-template-columns:minmax(0,1fr)}
+  }
+  @media (max-width:560px){
+    .reefer__features{grid-template-columns:1fr}
+  }
+</style>
