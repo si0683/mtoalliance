@@ -20,6 +20,18 @@
     if (e.target.tagName === 'A') { nav.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }
   });
 
+  // На время ресайза окна гасим анимацию меню (иначе при пересечении брейкпоинта
+  // 860px меню «выезжает» и уезжает). Также закрываем меню, если вернулись на десктоп.
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    document.documentElement.classList.add('resizing');
+    if (window.innerWidth > 860 && nav.classList.contains('open')) {
+      nav.classList.remove('open'); burger.setAttribute('aria-expanded', 'false');
+    }
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { document.documentElement.classList.remove('resizing'); }, 200);
+  }, { passive: true });
+
   // Reveal on scroll
   var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
